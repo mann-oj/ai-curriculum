@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Foundations — Teen Curriculum</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0eeff;
+    --muted: #8b87a8;
+    --accent1: #7c6cfc;
+    --accent2: #f7716a;
+    --accent3: #3dd9a4;
+    --accent4: #f9c03e;
+    --accent5: #58b4f8;
+    --w1: #7c6cfc;
+    --w2: #f7716a;
+    --w3: #3dd9a4;
+    --w4: #f9c03e;
+    --w5: #58b4f8;
+    --w6: #e06ecc;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; gap: 0; height: 56px;
+    overflow-x: auto;
+  }
+  .nav-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 15px;
+    color: var(--accent1);
+    white-space: nowrap;
+    margin-right: 2rem;
+    letter-spacing: -0.3px;
+  }
+  .nav-tabs { display: flex; gap: 0; }
+  .nav-tab {
+    padding: 0 14px; height: 56px;
+    display: flex; align-items: center;
+    font-size: 13px; font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--text); border-bottom-color: var(--accent1); }
+  .week-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block; margin-right: 6px;
+    flex-shrink: 0;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 2rem 60px;
+    max-width: 900px; margin: 0 auto;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 100px;
+    background: rgba(124,108,252,0.15);
+    border: 1px solid rgba(124,108,252,0.3);
+    font-size: 12px; font-weight: 500; color: var(--accent1);
+    margin-bottom: 24px; letter-spacing: 0.5px;
+  }
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 700; line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+  }
+  .hero h1 span { color: var(--accent1); }
+  .hero p {
+    font-size: 17px; color: var(--muted);
+    max-width: 560px; margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+  .stats-row {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 60px;
+  }
+  .stat-pill {
+    padding: 8px 18px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 100px; font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .stat-pill span { color: var(--muted); font-weight: 400; }
+
+  /* ── WEEK OVERVIEW CARDS ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    max-width: 1100px; margin: 0 auto 80px; padding: 0 2rem;
+  }
+  .overview-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px;
+    cursor: pointer; transition: transform 0.2s, border-color 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .overview-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.15); }
+  .overview-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--wc);
+  }
+  .card-week { font-size: 11px; font-weight: 600; color: var(--wc); letter-spacing: 1px; margin-bottom: 8px; }
+  .card-title { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; }
+  .tag {
+    padding: 3px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 500;
+    background: rgba(255,255,255,0.06);
+    color: var(--muted);
+  }
+
+  /* ── WEEK SECTIONS ── */
+  .section { display: none; padding: 0 2rem 80px; max-width: 1100px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  .section-header {
+    padding: 48px 0 36px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .section-week { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; color: var(--wc); margin-bottom: 10px; }
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(28px, 4vw, 44px); font-weight: 700;
+    letter-spacing: -1.5px; margin-bottom: 12px;
+  }
+  .section-desc { font-size: 16px; color: var(--muted); max-width: 600px; line-height: 1.7; }
+  .section-meta { display: flex; gap: 20px; margin-top: 20px; }
+  .meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+  .meta-icon { font-size: 14px; }
+
+  /* ── CONTENT BLOCKS ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  .block {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px;
+  }
+  .block-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px; font-weight: 600;
+    margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+  }
+  .block-title .icon {
+    width: 26px; height: 26px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+    background: rgba(255,255,255,0.07);
+  }
+
+  /* concepts */
+  .concept-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .concept-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px; border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    font-size: 14px; line-height: 1.5;
+  }
+  .concept-bullet {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--wc); flex-shrink: 0; margin-top: 6px;
+  }
+
+  /* resources */
+  .resource-list { display: flex; flex-direction: column; gap: 8px; }
+  .resource-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    text-decoration: none; color: inherit;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .resource-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.14); }
+  .resource-badge {
+    padding: 3px 8px; border-radius: 5px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .badge-video { background: rgba(247,113,106,0.18); color: #f7716a; }
+  .badge-tool  { background: rgba(61,217,164,0.18);  color: #3dd9a4; }
+  .badge-read  { background: rgba(124,108,252,0.18); color: #7c6cfc; }
+  .badge-game  { background: rgba(249,192,62,0.18);  color: #f9c03e; }
+  .resource-info { flex: 1; min-width: 0; }
+  .resource-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .resource-sub  { font-size: 12px; color: var(--muted); }
+  .resource-arrow { color: var(--muted); font-size: 14px; flex-shrink: 0; }
+
+  /* activity */
+  .activity-block {
+    background: linear-gradient(135deg, rgba(124,108,252,0.1), rgba(61,217,164,0.05));
+    border: 1px solid rgba(124,108,252,0.25);
+    border-radius: 16px; padding: 24px;
+    margin-bottom: 32px;
+  }
+  .activity-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 1px;
+    color: var(--accent3); margin-bottom: 10px;
+  }
+  .activity-title { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .activity-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+  .steps { display: flex; flex-direction: column; gap: 8px; }
+  .step {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 14px; border-radius: 10px;
+    background: rgba(255,255,255,0.04); font-size: 13px;
+  }
+  .step-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--wc); color: #000;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* big resource section */
+  .full-block { margin-bottom: 32px; }
+  .full-block .block-title { margin-bottom: 20px; }
+
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .resource-big-card {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px;
+    text-decoration: none; color: inherit;
+    transition: transform 0.2s, border-color 0.2s;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .resource-big-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.15); }
+  .rbc-top { display: flex; align-items: center; justify-content: space-between; }
+  .rbc-title { font-size: 13px; font-weight: 500; line-height: 1.4; }
+  .rbc-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+  /* ethics callout */
+  .ethics-callout {
+    background: rgba(249,192,62,0.08);
+    border: 1px solid rgba(249,192,62,0.25);
+    border-radius: 12px; padding: 16px 20px;
+    font-size: 14px; line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .ethics-callout strong { color: var(--accent4); }
+
+  /* discussion cards */
+  .discussion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 600px) { .discussion-grid { grid-template-columns: 1fr; } }
+  .discussion-card {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px; font-size: 13px; line-height: 1.5;
+  }
+  .discussion-q { font-weight: 600; margin-bottom: 6px; color: var(--accent4); font-size: 12px; letter-spacing: 0.5px; }
+
+  /* final project */
+  .project-options {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px; margin-bottom: 24px;
+  }
+  .project-card {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px;
+  }
+  .project-emoji { font-size: 28px; margin-bottom: 10px; }
+  .project-name { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .project-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* progress bar */
+  .progress-strip {
+    display: flex; gap: 6px; margin-bottom: 40px;
+  }
+  .progress-seg {
+    height: 4px; border-radius: 2px; flex: 1;
+    background: var(--border); cursor: pointer;
+    transition: background 0.2s;
+  }
+  .progress-seg.done { background: var(--accent1); }
+  .progress-seg.active { background: var(--wc); }
+
+  /* objectives list */
+  .objectives { display: flex; flex-direction: column; gap: 6px; }
+  .objective {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--muted);
+  }
+  .obj-check {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 9px;
+  }
+
+  /* home section */
+  #home.active { display: block; }
+
+  .divider { height: 1px; background: var(--border); margin: 40px 0; max-width: 1100px; margin-left: auto; margin-right: auto; }
+
+  /* footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 2rem;
+    text-align: center;
+    font-size: 13px; color: var(--muted);
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">AI Foundations</div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="show('home', this)">Overview</div>
+    <div class="nav-tab" onclick="show('w1', this)"><span class="week-dot" style="background:#7c6cfc"></span>Week 1</div>
+    <div class="nav-tab" onclick="show('w2', this)"><span class="week-dot" style="background:#f7716a"></span>Week 2</div>
+    <div class="nav-tab" onclick="show('w3', this)"><span class="week-dot" style="background:#3dd9a4"></span>Week 3</div>
+    <div class="nav-tab" onclick="show('w4', this)"><span class="week-dot" style="background:#f9c03e"></span>Week 4</div>
+    <div class="nav-tab" onclick="show('w5', this)"><span class="week-dot" style="background:#58b4f8"></span>Week 5</div>
+    <div class="nav-tab" onclick="show('w6', this)"><span class="week-dot" style="background:#e06ecc"></span>Week 6</div>
+    <div class="nav-tab" onclick="show('summary', this)">⭐ My Takeaways</div>
+  </div>
+</nav>
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<div id="home" class="section active" style="max-width:1100px">
+  <div class="hero">
+    <div class="hero-badge">🧠 Ages 13–14 · Complete Beginner · 6 Weeks</div>
+    <h1>Understanding the <span>AI World</span><br>Around You</h1>
+    <p>A beginner-friendly crash course in artificial intelligence — no coding experience needed. Learn how AI thinks, build your first AI project, and decide what kind of future you want it to help create.</p>
+    <div class="stats-row">
+      <div class="stat-pill">📅 6 Weeks <span>· ~3 hrs/week</span></div>
+      <div class="stat-pill">🌐 Online <span>· self-paced</span></div>
+      <div class="stat-pill">🎯 Beginner <span>· no experience needed</span></div>
+      <div class="stat-pill">🛠 Hands-on <span>· real AI tools</span></div>
+    </div>
+  </div>
+
+  <div class="overview-grid">
+    <div class="overview-card" style="--wc: var(--w1)" onclick="show('w1', document.querySelectorAll('.nav-tab')[1])">
+      <div class="card-week">WEEK 1</div>
+      <div class="card-title">What Even Is AI?</div>
+      <div class="card-desc">Bust the myths, learn what AI actually is, and spot it in your daily life.</div>
+      <div class="card-tags">
+        <span class="tag">Concepts</span><span class="tag">History</span><span class="tag">Daily Life</span>
+      </div>
+    </div>
+    <div class="overview-card" style="--wc: var(--w2)" onclick="show('w2', document.querySelectorAll('.nav-tab')[2])">
+      <div class="card-week">WEEK 2</div>
+      <div class="card-title">How AI Learns</div>
+      <div class="card-desc">Understand training data, patterns, and train your first image classifier.</div>
+      <div class="card-tags">
+        <span class="tag">Machine Learning</span><span class="tag">Teachable Machine</span>
+      </div>
+    </div>
+    <div class="overview-card" style="--wc: var(--w3)" onclick="show('w3', document.querySelectorAll('.nav-tab')[3])">
+      <div class="card-week">WEEK 3</div>
+      <div class="card-title">Inside the Neural Network</div>
+      <div class="card-desc">Peek inside the "brain" of AI — neurons, layers, and how machines see.</div>
+      <div class="card-tags">
+        <span class="tag">Neural Nets</span><span class="tag">Deep Learning</span>
+      </div>
+    </div>
+    <div class="overview-card" style="--wc: var(--w4)" onclick="show('w4', document.querySelectorAll('.nav-tab')[4])">
+      <div class="card-week">WEEK 4</div>
+      <div class="card-title">AI Ethics & Society</div>
+      <div class="card-desc">Who does AI help, who does it hurt? Bias, privacy, deepfakes, and the future of work.</div>
+      <div class="card-tags">
+        <span class="tag">Ethics</span><span class="tag">Bias</span><span class="tag">Privacy</span>
+      </div>
+    </div>
+    <div class="overview-card" style="--wc: var(--w5)" onclick="show('w5', document.querySelectorAll('.nav-tab')[5])">
+      <div class="card-week">WEEK 5</div>
+      <div class="card-title">Using AI Tools</div>
+      <div class="card-desc">Learn to use AI tools confidently, write smart prompts, and build a mini AI project.</div>
+      <div class="card-tags">
+        <span class="tag">ChatGPT</span><span class="tag">Prompting</span><span class="tag">Build</span>
+      </div>
+    </div>
+    <div class="overview-card" style="--wc: var(--w6)" onclick="show('w6', document.querySelectorAll('.nav-tab')[6])">
+      <div class="card-week">WEEK 6</div>
+      <div class="card-title">The Future of AI</div>
+      <div class="card-desc">What's coming next? Careers in AI and your final showcase project.</div>
+      <div class="card-tags">
+        <span class="tag">Careers</span><span class="tag">Future</span><span class="tag">Final Project</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:1100px;margin:0 auto;padding:0 2rem 80px">
+    <div class="block">
+      <div class="block-title"><span class="icon">🎯</span> What you'll be able to do after 6 weeks</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="concept-item"><span class="concept-bullet" style="background:var(--accent1)"></span>Explain what AI is and how it actually works — no jargon</div>
+        <div class="concept-item"><span class="concept-bullet" style="background:var(--accent2)"></span>Train your own AI model using Google Teachable Machine</div>
+        <div class="concept-item"><span class="concept-bullet" style="background:var(--accent3)"></span>Think critically about AI bias, privacy, and fake content</div>
+        <div class="concept-item"><span class="concept-bullet" style="background:var(--accent4)"></span>Write effective prompts to get better results from AI tools</div>
+        <div class="concept-item"><span class="concept-bullet" style="background:var(--accent5)"></span>Build a real mini AI project you can show off</div>
+        <div class="concept-item"><span class="concept-bullet" style="background:#e06ecc"></span>Know what AI careers exist and how to start exploring them</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ WEEK 1 ═══════════════ -->
+<div id="w1" class="section" style="--wc: var(--w1)">
+  <div class="section-header">
+    <div class="section-week">WEEK 1</div>
+    <div class="section-title">What Even Is AI?</div>
+    <div class="section-desc">Separating fact from science fiction. We'll look at what AI actually is, where it came from, and how it's already running in the background of your everyday life.</div>
+    <div class="section-meta">
+      <div class="meta-item"><span class="meta-icon">⏱</span> 3 hours</div>
+      <div class="meta-item"><span class="meta-icon">📹</span> 4 videos</div>
+      <div class="meta-item"><span class="meta-icon">✏️</span> 1 activity</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="block">
+      <div class="block-title"><span class="icon">💡</span> Key Concepts</div>
+      <ul class="concept-list">
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>What AI is</strong> — programs that can do tasks that normally need human intelligence</div></li>
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>AI vs automation</strong> — not all smart machines are AI (a calculator isn't)</div></li>
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>Types of AI</strong> — narrow AI (does one thing) vs general AI (theoretical, doesn't exist yet)</div></li>
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>AI in your life right now</strong> — Spotify recommendations, Face ID, Google Translate, TikTok's feed</div></li>
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>Brief history</strong> — from 1950s theory to today's ChatGPT moment</div></li>
+      </ul>
+    </div>
+    <div class="block">
+      <div class="block-title"><span class="icon">🎯</span> Learning Objectives</div>
+      <div class="objectives">
+        <div class="objective"><span class="obj-check">○</span> Define AI in your own words</div>
+        <div class="objective"><span class="obj-check">○</span> Give 5 examples of AI in everyday life</div>
+        <div class="objective"><span class="obj-check">○</span> Explain the difference between AI and a regular computer program</div>
+        <div class="objective"><span class="obj-check">○</span> Know why people are excited — and worried — about AI</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="full-block block" style="margin-bottom:24px">
+    <div class="block-title"><span class="icon">📹</span> Watch These First — Video Resources</div>
+    <div class="resource-list">
+      <a href="https://www.youtube.com/watch?v=mJeNghZXtMo" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">How Machines Learn — CGP Grey</div>
+          <div class="resource-sub">10 min · Brilliant animation explaining how AI learns from data</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=ad79nYk2keg" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Crash Course AI #1 — What is AI?</div>
+          <div class="resource-sub">11 min · PBS series, made for teens, super clear</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=aircAruvnKk" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">But What Is a Neural Network? — 3Blue1Brown</div>
+          <div class="resource-sub">19 min · The most beautiful visual intro to AI that exists. A classic.</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=R9OHn5ZF4Uo" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">AI, Explained — Vox</div>
+          <div class="resource-sub">8 min · Great for seeing AI in the real world, not just tech labs</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="activity-block">
+    <div class="activity-label">✏️ WEEK 1 ACTIVITY</div>
+    <div class="activity-title">AI Spotter — A 24-Hour Challenge</div>
+    <div class="activity-desc">Over 24 hours, pay close attention to every app, tool, or service you use. Write down every place you think AI might be involved and explain what you think the AI is doing.</div>
+    <div class="steps">
+      <div class="step"><span class="step-num">1</span> Open a notes app (or grab a notebook) and set a reminder every few hours to log what you've used</div>
+      <div class="step"><span class="step-num">2</span> For each item, write: <em>the name, what the AI does, and how it makes it "smart"</em></div>
+      <div class="step"><span class="step-num">3</span> Try to find at least 8 examples — hint: music apps, social feeds, maps, and autocorrect all count</div>
+      <div class="step"><span class="step-num">4</span> At the end, pick your most surprising discovery and share it with your class or study group</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ WEEK 2 ═══════════════ -->
+<div id="w2" class="section" style="--wc: var(--w2)">
+  <div class="section-header">
+    <div class="section-week">WEEK 2</div>
+    <div class="section-title">How AI Learns</div>
+    <div class="section-desc">AI doesn't get programmed with rules — it learns from examples. This week you'll understand exactly how that works, and you'll train your very own AI model using Google Teachable Machine.</div>
+    <div class="section-meta">
+      <div class="meta-item"><span class="meta-icon">⏱</span> 3–4 hours</div>
+      <div class="meta-item"><span class="meta-icon">📹</span> 4 videos</div>
+      <div class="meta-item"><span class="meta-icon">🛠</span> 1 hands-on tool</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="block">
+      <div class="block-title"><span class="icon">💡</span> Key Concepts</div>
+      <ul class="concept-list">
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>Training data</strong> — AI learns by seeing thousands of labelled examples</div></li>
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>Patterns</strong> — AI finds patterns humans can't always see</div></li>
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>Supervised learning</strong> — you show the AI correct answers, it learns to predict them</div></li>
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>Overfitting</strong> — when AI memorises instead of actually learning (like cramming for a test)</div></li>
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>Confidence scores</strong> — AI doesn't say "yes/no", it says "I'm 87% sure this is a cat"</div></li>
+      </ul>
+    </div>
+    <div class="block">
+      <div class="block-title"><span class="icon">🛠</span> Tool to Try</div>
+      <div style="margin-bottom:14px">
+        <a href="https://teachablemachine.withgoogle.com" target="_blank" class="resource-card" style="display:flex">
+          <span class="resource-badge badge-tool">TOOL</span>
+          <div class="resource-info">
+            <div class="resource-name">Google Teachable Machine</div>
+            <div class="resource-sub">Free, browser-based, no account needed · Train image, sound, or pose models</div>
+          </div>
+          <span class="resource-arrow">↗</span>
+        </a>
+      </div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6">This is the main hands-on tool for Week 2. You'll use your webcam to train a real image classifier in minutes.</p>
+    </div>
+  </div>
+
+  <div class="full-block block" style="margin-bottom:24px">
+    <div class="block-title"><span class="icon">📹</span> Video Resources</div>
+    <div class="resource-list">
+      <a href="https://www.youtube.com/watch?v=HcqpanDadyQ" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Machine Learning for Beginners — Microsoft</div>
+          <div class="resource-sub">6 min · Really clear intro to what ML actually means</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=ukzFI9rgwfU" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">How Does Machine Learning Work? — Computerphile</div>
+          <div class="resource-sub">9 min · Great visual explanation of training and patterns</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=xrzhMK8pjGM" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Crash Course AI #2 — Supervised Learning</div>
+          <div class="resource-sub">11 min · Part of the Crash Course series, perfect follow-on from Week 1</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=Y_XBGj7FkrE" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Training a Machine to See — Google</div>
+          <div class="resource-sub">4 min · How image recognition AI gets trained, from Google themselves</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="activity-block">
+    <div class="activity-label">🛠 WEEK 2 ACTIVITY — HANDS ON</div>
+    <div class="activity-title">Train Your First AI Model</div>
+    <div class="activity-desc">You'll use Google Teachable Machine to train an image classifier using your own webcam. No code, no downloads — just a browser. Choose one of these fun challenge options:</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+      <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;font-size:13px"><strong style="display:block;margin-bottom:4px">Option A — Hand Signs</strong>Train rock, paper, scissors with your hand gestures</div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;font-size:13px"><strong style="display:block;margin-bottom:4px">Option B — Mood Detector</strong>Train happy face vs serious face vs surprised face</div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;font-size:13px"><strong style="display:block;margin-bottom:4px">Option C — Object Sorter</strong>Two objects from your desk — can the AI tell them apart?</div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;font-size:13px"><strong style="display:block;margin-bottom:4px">Option D — Your Idea</strong>Pick anything — pets, snacks, lighting conditions...</div>
+    </div>
+    <div class="steps">
+      <div class="step"><span class="step-num">1</span> Go to teachablemachine.withgoogle.com and click "Get Started" → "Image Project"</div>
+      <div class="step"><span class="step-num">2</span> Create 2-3 classes, record at least 50 photos per class using your webcam</div>
+      <div class="step"><span class="step-num">3</span> Click "Train Model" and test it in real-time — notice the confidence percentages</div>
+      <div class="step"><span class="step-num">4</span> Try to confuse it. What breaks it? Write down 3 observations about what you notice</div>
+      <div class="step"><span class="step-num">5</span> Share a screenshot of your results and your 3 observations with the class</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ WEEK 3 ═══════════════ -->
+<div id="w3" class="section" style="--wc: var(--w3)">
+  <div class="section-header">
+    <div class="section-week">WEEK 3</div>
+    <div class="section-title">Inside the Neural Network</div>
+    <div class="section-desc">This week goes a layer deeper. You'll see how AI processes images, text, and sound — and play with a real neural network in your browser using TensorFlow Playground.</div>
+    <div class="section-meta">
+      <div class="meta-item"><span class="meta-icon">⏱</span> 3 hours</div>
+      <div class="meta-item"><span class="meta-icon">📹</span> 4 videos</div>
+      <div class="meta-item"><span class="meta-icon">🎮</span> 1 interactive tool</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="block">
+      <div class="block-title"><span class="icon">💡</span> Key Concepts</div>
+      <ul class="concept-list">
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>Neurons &amp; layers</strong> — inspired by the brain, but very different from how brains actually work</div></li>
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>Input → hidden → output</strong> — data flows forward through layers of processing</div></li>
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>Weights</strong> — numbers the network adjusts during training to get better</div></li>
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>How AI reads images</strong> — pixels become numbers, patterns become meaning</div></li>
+        <li class="concept-item"><span class="concept-bullet"></span><div><strong>Large Language Models</strong> — how ChatGPT and Claude predict the next word</div></li>
+      </ul>
+    </div>
+    <div class="block">
+      <div class="block-title"><span class="icon">🎮</span> Interactive Tools</div>
+      <div class="resource-list">
+        <a href="https://playground.tensorflow.org" target="_blank" class="resource-card">
+          <span class="resource-badge badge-game">PLAY</span>
+          <div class="resource-info">
+            <div class="resource-name">TensorFlow Playground</div>
+            <div class="resource-sub">Visual neural network you can tweak in real time — mesmerising</div>
+          </div>
+          <span class="resource-arrow">↗</span>
+        </a>
+        <a href="https://experiments.withgoogle.com/collection/ai" target="_blank" class="resource-card">
+          <span class="resource-badge badge-game">PLAY</span>
+          <div class="resource-info">
+            <div class="resource-name">Google AI Experiments</div>
+            <div class="resource-sub">Collection of playful browser demos powered by real neural networks</div>
+          </div>
+          <span class="resource-arrow">↗</span>
+        </a>
+        <a href="https://quickdraw.withgoogle.com" target="_blank" class="resource-card">
+          <span class="resource-badge badge-game">PLAY</span>
+          <div class="resource-info">
+            <div class="resource-name">Quick, Draw! — Google</div>
+            <div class="resource-sub">Draw something, watch AI try to recognise it in 20 seconds</div>
+          </div>
+          <span class="resource-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="full-block block" style="margin-bottom:24px">
+    <div class="block-title"><span class="icon">📹</span> Video Resources</div>
+    <div class="resource-list">
+      <a href="https://www.youtube.com/watch?v=aircAruvnKk" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">But What Is a Neural Network? — 3Blue1Brown (Part 1)</div>
+          <div class="resource-sub">19 min · The best visual explanation of neural networks anywhere online</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=IHZwWFHWa-w" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Gradient Descent, How Neural Networks Learn — 3Blue1Brown (Part 2)</div>
+          <div class="resource-sub">21 min · Goes deeper — how the network actually improves over time</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=wjZofJX0v4M" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Large Language Models Explained — Fireship</div>
+          <div class="resource-sub">6 min · Fast, witty explainer of how ChatGPT-style AI actually works</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=oc6-mKzv7nk" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Crash Course AI #3 — Neural Networks</div>
+          <div class="resource-sub">13 min · Part 3 of the PBS teen-friendly series</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="activity-block">
+    <div class="activity-label">🎮 WEEK 3 ACTIVITY — EXPLORE</div>
+    <div class="activity-title">Play With a Real Neural Network</div>
+    <div class="activity-desc">Head to TensorFlow Playground and run experiments on a live neural network. You'll see in real time how the number of layers and neurons affects how well the AI learns.</div>
+    <div class="steps">
+      <div class="step"><span class="step-num">1</span> Go to playground.tensorflow.org — start with the default settings and click Play (▶)</div>
+      <div class="step"><span class="step-num">2</span> Watch the test loss number drop as the network trains — lower is better</div>
+      <div class="step"><span class="step-num">3</span> Try the "spiral" dataset (bottom left). Add more hidden layers until the network can learn it</div>
+      <div class="step"><span class="step-num">4</span> Write down: how many layers did you need? What happened with just 1 layer?</div>
+      <div class="step"><span class="step-num">5</span> Bonus: try Quick, Draw! and then go to quickdraw.withgoogle.com/data to see what the training data looks like</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ WEEK 4 ═══════════════ -->
+<div id="w4" class="section" style="--wc: var(--w4)">
+  <div class="section-header">
+    <div class="section-week">WEEK 4</div>
+    <div class="section-title">AI Ethics &amp; Society</div>
+    <div class="section-desc">AI is powerful — and power can cause harm. This week we look at the real-world consequences of AI: bias, privacy, deepfakes, and who gets left behind. No tech background needed to have an opinion here.</div>
+    <div class="section-meta">
+      <div class="meta-item"><span class="meta-icon">⏱</span> 3 hours</div>
+      <div class="meta-item"><span class="meta-icon">📹</span> 5 videos</div>
+      <div class="meta-item"><span class="meta-icon">💬</span> Group discussion</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="block">
+      <div class="block-title"><span class="icon">💡</span> Topics Covered</div>
+      <ul class="concept-list">
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--accent4)"></span><div><strong>AI bias</strong> — when training data reflects human prejudice, the AI learns it too</div></li>
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--accent4)"></span><div><strong>Deepfakes</strong> — synthetic video and audio that can make anyone say anything</div></li>
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--accent4)"></span><div><strong>Privacy &amp; surveillance</strong> — facial recognition, data collection, who's watching</div></li>
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--accent4)"></span><div><strong>AI &amp; jobs</strong> — what work is changing, what's being lost, what's being created</div></li>
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--accent4)"></span><div><strong>Who's responsible?</strong> — the people who build it, use it, or govern it</div></li>
+      </ul>
+    </div>
+    <div class="block">
+      <div class="block-title"><span class="icon">⚠️</span> Why This Week Matters</div>
+      <div class="ethics-callout">
+        <strong>AI bias is real.</strong> In 2018, a facial recognition system used by US law enforcement was found to misidentify Black women at error rates 34 times higher than for white men. The cause? Biased training data.
+      </div>
+      <div class="ethics-callout">
+        <strong>Deepfakes are growing.</strong> In 2023, synthetic media incidents increased by 900%. Learning to spot them isn't optional anymore.
+      </div>
+    </div>
+  </div>
+
+  <div class="full-block block" style="margin-bottom:24px">
+    <div class="block-title"><span class="icon">📹</span> Video Resources</div>
+    <div class="resource-list">
+      <a href="https://www.youtube.com/watch?v=59bMh59JQDo" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Coded Bias — Official Trailer + Discussion</div>
+          <div class="resource-sub">3 min trailer, full documentary on Netflix · The definitive film on AI bias</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=ZksCSMmJhog" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">How Deepfakes Work — Vox</div>
+          <div class="resource-sub">7 min · What deepfakes are, how they're made, and why they matter to you</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=j7rNPnODiCQ" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">The Problem With AI Bias — TED-Ed</div>
+          <div class="resource-sub">5 min · Animated, punchy breakdown of where bias comes from</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=RzkD_rTEBYs" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Will AI Take Our Jobs? — Kurzgesagt</div>
+          <div class="resource-sub">11 min · Beautiful animation, nuanced take on automation and work</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=O09-8mK7kzM" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Crash Course AI — Ethics of AI</div>
+          <div class="resource-sub">13 min · Part of the PBS series, covers fairness and accountability</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="activity-block">
+    <div class="activity-label">💬 WEEK 4 ACTIVITY — THINK &amp; DISCUSS</div>
+    <div class="activity-title">The AI Ethics Debate</div>
+    <div class="activity-desc">Pick one of the discussion questions below. Write a short paragraph (5–8 sentences) with your view, then share it for discussion. There are no "right" answers — but every answer needs a reason.</div>
+    <div class="discussion-grid">
+      <div class="discussion-card">
+        <div class="discussion-q">QUESTION 1</div>
+        Should AI be allowed to make decisions in criminal justice — like recommending whether someone gets bail? Why or why not?
+      </div>
+      <div class="discussion-card">
+        <div class="discussion-q">QUESTION 2</div>
+        If an AI system is found to be biased, who should be held responsible — the company that made it, the government that used it, or both?
+      </div>
+      <div class="discussion-card">
+        <div class="discussion-q">QUESTION 3</div>
+        Should deepfakes be completely illegal, or should there be situations where making one is OK? Who should decide?
+      </div>
+      <div class="discussion-card">
+        <div class="discussion-q">QUESTION 4</div>
+        If AI takes away many jobs, who should be responsible for helping people whose work disappears — companies, governments, or individuals?
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ WEEK 5 ═══════════════ -->
+<div id="w5" class="section" style="--wc: var(--w5)">
+  <div class="section-header">
+    <div class="section-week">WEEK 5</div>
+    <div class="section-title">Using AI Tools Confidently</div>
+    <div class="section-desc">Time to get hands-on with the tools millions of people are using right now. This week you'll learn how to get useful results from AI, understand its limits, and start your mini project.</div>
+    <div class="section-meta">
+      <div class="meta-item"><span class="meta-icon">⏱</span> 3–4 hours</div>
+      <div class="meta-item"><span class="meta-icon">📹</span> 3 videos</div>
+      <div class="meta-item"><span class="meta-icon">🛠</span> Multiple tools</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="block">
+      <div class="block-title"><span class="icon">💡</span> Key Concepts</div>
+      <ul class="concept-list">
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--accent5)"></span><div><strong>Prompting</strong> — the art of asking AI the right way to get better results</div></li>
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--accent5)"></span><div><strong>Hallucinations</strong> — AI sometimes confidently makes things up (always fact-check!)</div></li>
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--accent5)"></span><div><strong>Context matters</strong> — the more useful background you give AI, the better it responds</div></li>
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--accent5)"></span><div><strong>AI for learning vs. AI for cheating</strong> — knowing the difference and why it matters</div></li>
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--accent5)"></span><div><strong>Generative AI</strong> — text, images, code, music — what AI can now create</div></li>
+      </ul>
+    </div>
+    <div class="block">
+      <div class="block-title"><span class="icon">🛠</span> Tools to Explore</div>
+      <div class="resource-list">
+        <a href="https://claude.ai" target="_blank" class="resource-card">
+          <span class="resource-badge badge-tool">TOOL</span>
+          <div class="resource-info">
+            <div class="resource-name">Claude — by Anthropic</div>
+            <div class="resource-sub">Free tier · Great for explanation, writing, thinking through problems</div>
+          </div>
+          <span class="resource-arrow">↗</span>
+        </a>
+        <a href="https://chatgpt.com" target="_blank" class="resource-card">
+          <span class="resource-badge badge-tool">TOOL</span>
+          <div class="resource-info">
+            <div class="resource-name">ChatGPT — by OpenAI</div>
+            <div class="resource-sub">Free tier · The most widely used AI chatbot</div>
+          </div>
+          <span class="resource-arrow">↗</span>
+        </a>
+        <a href="https://labs.google/fx/tools/image-fx" target="_blank" class="resource-card">
+          <span class="resource-badge badge-tool">TOOL</span>
+          <div class="resource-info">
+            <div class="resource-name">Google ImageFX</div>
+            <div class="resource-sub">Free · Generate images from text prompts</div>
+          </div>
+          <span class="resource-arrow">↗</span>
+        </a>
+        <a href="https://ml-for-kids.co.uk" target="_blank" class="resource-card">
+          <span class="resource-badge badge-tool">TOOL</span>
+          <div class="resource-info">
+            <div class="resource-name">Machine Learning for Kids</div>
+            <div class="resource-sub">Free · Build simple AI projects using Scratch — beginner-perfect</div>
+          </div>
+          <span class="resource-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="full-block block" style="margin-bottom:24px">
+    <div class="block-title"><span class="icon">📹</span> Video Resources</div>
+    <div class="resource-list">
+      <a href="https://www.youtube.com/watch?v=jc4_yc8zuUk" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Prompt Engineering for Everyone — Google</div>
+          <div class="resource-sub">8 min · How to actually talk to AI to get good results</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=_nSmkyDNulk" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">AI Hallucinations Explained — Fireship</div>
+          <div class="resource-sub">5 min · Why AI lies confidently and what to do about it</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=hfIUstzHs9A" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Generative AI for Beginners — Microsoft</div>
+          <div class="resource-sub">12 min · Covers text, image, and audio generation clearly</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="full-block block" style="margin-bottom:24px">
+    <div class="block-title"><span class="icon">✍️</span> Prompt Engineering — Quick Guide</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px">
+      <div style="background:rgba(88,180,248,0.07);border:1px solid rgba(88,180,248,0.2);border-radius:10px;padding:14px">
+        <div style="color:var(--accent5);font-weight:600;margin-bottom:6px">✓ Good Prompt</div>
+        <em>"You are a patient science teacher. Explain how photosynthesis works to a 13-year-old who likes football. Use a football analogy."</em>
+      </div>
+      <div style="background:rgba(247,113,106,0.07);border:1px solid rgba(247,113,106,0.2);border-radius:10px;padding:14px">
+        <div style="color:var(--accent2);font-weight:600;margin-bottom:6px">✗ Weak Prompt</div>
+        <em>"Explain photosynthesis."</em>
+      </div>
+      <div style="background:rgba(88,180,248,0.07);border:1px solid rgba(88,180,248,0.2);border-radius:10px;padding:14px">
+        <div style="color:var(--accent5);font-weight:600;margin-bottom:6px">✓ Good Prompt</div>
+        <em>"List 5 ideas for a school project on climate change. For each idea, give a difficulty level (easy/medium/hard) and estimate how long it would take."</em>
+      </div>
+      <div style="background:rgba(247,113,106,0.07);border:1px solid rgba(247,113,106,0.2);border-radius:10px;padding:14px">
+        <div style="color:var(--accent2);font-weight:600;margin-bottom:6px">✗ Weak Prompt</div>
+        <em>"Give me ideas for a school project."</em>
+      </div>
+    </div>
+  </div>
+
+  <div class="activity-block">
+    <div class="activity-label">🛠 WEEK 5 ACTIVITY — BUILD</div>
+    <div class="activity-title">Mini Project: Prompt Engineer Challenge</div>
+    <div class="activity-desc">Your goal is to use AI tools to create something genuinely useful or interesting. Pick a challenge from the options below and document your prompt journey.</div>
+    <div class="steps">
+      <div class="step"><span class="step-num">1</span> Pick a challenge: <em>explain a topic you love, write a short story, create a study guide for a subject, or generate images for a story you write</em></div>
+      <div class="step"><span class="step-num">2</span> Write your first prompt and record the result — take a screenshot</div>
+      <div class="step"><span class="step-num">3</span> Improve it at least 3 times. What changed? What worked better?</div>
+      <div class="step"><span class="step-num">4</span> Fact-check one claim the AI made using a separate reliable source</div>
+      <div class="step"><span class="step-num">5</span> Share your 3 prompts (worst to best) and explain what you changed and why</div>
+    </div>
+  </div>
+
+  <!-- SAFETY SECTION -->
+  <div style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 16px;border-top:1px solid var(--border)">
+      <div style="background:rgba(249,192,62,0.15);border:1px solid rgba(249,192,62,0.3);border-radius:10px;padding:6px 14px;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--accent4)">🛡 SAFETY WITH AI</div>
+      <p style="font-size:13px;color:var(--muted)">A dedicated section — read this before using any AI tool</p>
+    </div>
+  </div>
+
+  <div style="background:rgba(249,192,62,0.06);border:1px solid rgba(249,192,62,0.2);border-radius:16px;padding:24px;margin-bottom:20px">
+    <p style="font-size:15px;font-weight:500;margin-bottom:8px">Why safety matters at your age specifically</p>
+    <p style="font-size:14px;color:var(--muted);line-height:1.7">AI tools are designed for adults, but millions of teenagers use them every day. That's not a reason to avoid them — but it is a reason to know exactly how to protect yourself. The four areas below are things every 13-14 year old should understand before typing a single prompt.</p>
+  </div>
+
+  <!-- 4 safety topics -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+
+    <!-- 1: Personal info -->
+    <div class="block" style="border-color:rgba(247,113,106,0.25)">
+      <div class="block-title"><span class="icon" style="background:rgba(247,113,106,0.15)">🔒</span> Don't share personal info</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px">AI chat tools store and may use your conversations for training. Treat them like a public notice board — never type anything you wouldn't want a stranger to see.</p>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="concept-item" style="background:rgba(247,113,106,0.06)"><span class="concept-bullet" style="background:#f7716a"></span><div>Never enter your full name, school, address, or phone number</div></div>
+        <div class="concept-item" style="background:rgba(247,113,106,0.06)"><span class="concept-bullet" style="background:#f7716a"></span><div>Never share passwords or answers to security questions</div></div>
+        <div class="concept-item" style="background:rgba(247,113,106,0.06)"><span class="concept-bullet" style="background:#f7716a"></span><div>Avoid uploading photos that include your face, location, or school uniform</div></div>
+        <div class="concept-item" style="background:rgba(247,113,106,0.06)"><span class="concept-bullet" style="background:#f7716a"></span><div>Don't share personal problems or family details — a trusted adult is better for that</div></div>
+      </div>
+    </div>
+
+    <!-- 2: Misinformation -->
+    <div class="block" style="border-color:rgba(124,108,252,0.25)">
+      <div class="block-title"><span class="icon" style="background:rgba(124,108,252,0.15)">🕵️</span> Spot AI misinformation & deepfakes</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px">AI can generate convincing fake images, videos, and text. Knowing how to spot them is one of the most important digital skills you can have right now.</p>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="concept-item" style="background:rgba(124,108,252,0.06)"><span class="concept-bullet" style="background:#7c6cfc"></span><div>Look for unnatural hands, blurry edges around faces, or odd lighting in images</div></div>
+        <div class="concept-item" style="background:rgba(124,108,252,0.06)"><span class="concept-bullet" style="background:#7c6cfc"></span><div>AI text often sounds confident but can be completely wrong — always verify with a second source</div></div>
+        <div class="concept-item" style="background:rgba(124,108,252,0.06)"><span class="concept-bullet" style="background:#7c6cfc"></span><div>Use tools like Google Reverse Image Search or TinEye to check if an image is real</div></div>
+        <div class="concept-item" style="background:rgba(124,108,252,0.06)"><span class="concept-bullet" style="background:#7c6cfc"></span><div>If a video or audio clip seems shocking or "too perfect" — be suspicious before sharing</div></div>
+      </div>
+    </div>
+
+    <!-- 3: Mental health -->
+    <div class="block" style="border-color:rgba(61,217,164,0.25)">
+      <div class="block-title"><span class="icon" style="background:rgba(61,217,164,0.15)">🧠</span> Mental health & over-reliance</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px">AI chatbots can feel like friends — they're always available, never judge you, and seem to understand. But they are not people, and relying on them emotionally can get in the way of real connections.</p>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="concept-item" style="background:rgba(61,217,164,0.06)"><span class="concept-bullet" style="background:#3dd9a4"></span><div>Using AI for homework help is fine — but always try the problem yourself first</div></div>
+        <div class="concept-item" style="background:rgba(61,217,164,0.06)"><span class="concept-bullet" style="background:#3dd9a4"></span><div>If you find yourself going to AI for emotional support regularly, talk to a real person you trust instead</div></div>
+        <div class="concept-item" style="background:rgba(61,217,164,0.06)"><span class="concept-bullet" style="background:#3dd9a4"></span><div>AI praise is not real — it's designed to be encouraging, not honest</div></div>
+        <div class="concept-item" style="background:rgba(61,217,164,0.06)"><span class="concept-bullet" style="background:#3dd9a4"></span><div>Notice if AI use is cutting into sleep, social time, or things you used to enjoy — that's worth paying attention to</div></div>
+      </div>
+    </div>
+
+    <!-- 4: Privacy & data -->
+    <div class="block" style="border-color:rgba(88,180,248,0.25)">
+      <div class="block-title"><span class="icon" style="background:rgba(88,180,248,0.15)">🌐</span> Online safety & data privacy</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px">Every time you use an AI tool, data is collected. Understanding what happens to it — and how to protect yourself — puts you in control.</p>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="concept-item" style="background:rgba(88,180,248,0.06)"><span class="concept-bullet" style="background:#58b4f8"></span><div>Most free AI tools require you to be 13+ — but many also require a parent's permission under 18</div></div>
+        <div class="concept-item" style="background:rgba(88,180,248,0.06)"><span class="concept-bullet" style="background:#58b4f8"></span><div>Read (or ask an adult to explain) the privacy policy before creating an account</div></div>
+        <div class="concept-item" style="background:rgba(88,180,248,0.06)"><span class="concept-bullet" style="background:#58b4f8"></span><div>Check if the tool lets you delete your conversation history — and use that option</div></div>
+        <div class="concept-item" style="background:rgba(88,180,248,0.06)"><span class="concept-bullet" style="background:#58b4f8"></span><div>Avoid using AI tools on public or shared devices where your session might be visible to others</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Safety video resources -->
+  <div class="full-block block" style="margin-bottom:24px">
+    <div class="block-title"><span class="icon">📹</span> Safety — Video Resources</div>
+    <div class="resource-list">
+      <a href="https://www.youtube.com/watch?v=ZksCSMmJhog" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">How to Spot a Deepfake — Vox</div>
+          <div class="resource-sub">7 min · Practical, visual guide to identifying synthetic media</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=AToV5tbAcB8" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Is Your Data Safe With AI? — Tech Insider</div>
+          <div class="resource-sub">6 min · What AI companies actually do with your conversations</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=v-bKKrFrDvs" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">AI & Mental Health — What You Should Know — Psych2Go</div>
+          <div class="resource-sub">7 min · Teen-friendly look at emotional over-reliance on AI tools</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=9qmqmBNjFQs" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Internet Safety in the Age of AI — Common Sense Media</div>
+          <div class="resource-sub">8 min · Made specifically for teens — covers privacy, data, and scams</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Safety activity -->
+  <div class="activity-block" style="background:linear-gradient(135deg,rgba(249,192,62,0.1),rgba(247,113,106,0.05));border-color:rgba(249,192,62,0.3)">
+    <div class="activity-label" style="color:var(--accent4)">🛡 SAFETY ACTIVITY — REFLECT</div>
+    <div class="activity-title">Your Personal AI Safety Checklist</div>
+    <div class="activity-desc">Before you use any new AI tool for the first time, run through this checklist. You can copy this into your notes and keep it handy.</div>
+    <div class="steps">
+      <div class="step"><span class="step-num" style="background:var(--accent4)">1</span> Do I know who made this tool and do I trust them?</div>
+      <div class="step"><span class="step-num" style="background:var(--accent4)">2</span> Am I about to type anything personal — name, school, location, feelings? If yes, stop.</div>
+      <div class="step"><span class="step-num" style="background:var(--accent4)">3</span> Does this tool have an age requirement and do I meet it?</div>
+      <div class="step"><span class="step-num" style="background:var(--accent4)">4</span> If the AI tells me something important — have I checked it with another source?</div>
+      <div class="step"><span class="step-num" style="background:var(--accent4)">5</span> Am I using this to help me learn — or to avoid learning altogether?</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ WEEK 6 ═══════════════ -->
+<div id="w6" class="section" style="--wc: var(--w6)">
+  <div class="section-header">
+    <div class="section-week">WEEK 6</div>
+    <div class="section-title">The Future &amp; Your Final Project</div>
+    <div class="section-desc">The final week. We look at where AI is heading, what careers exist in this space, and you'll put together a final project that shows off everything you've learned.</div>
+    <div class="section-meta">
+      <div class="meta-item"><span class="meta-icon">⏱</span> 4 hours</div>
+      <div class="meta-item"><span class="meta-icon">📹</span> 3 videos</div>
+      <div class="meta-item"><span class="meta-icon">🏆</span> Final project</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="block">
+      <div class="block-title"><span class="icon">🔭</span> What's Coming in AI</div>
+      <ul class="concept-list">
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--w6)"></span><div><strong>Multimodal AI</strong> — AI that can see, hear, speak, and reason all at once</div></li>
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--w6)"></span><div><strong>AI agents</strong> — AI that can take actions, not just answer questions</div></li>
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--w6)"></span><div><strong>AI in science</strong> — AlphaFold solved protein folding; what's next in medicine and climate?</div></li>
+        <li class="concept-item"><span class="concept-bullet" style="background:var(--w6)"></span><div><strong>Regulation</strong> — governments are starting to make AI rules. Should they?</div></li>
+      </ul>
+    </div>
+    <div class="block">
+      <div class="block-title"><span class="icon">💼</span> Careers in AI</div>
+      <div class="resource-list">
+        <a href="https://www.youtube.com/watch?v=x2mRoFNm22g" target="_blank" class="resource-card">
+          <span class="resource-badge badge-video">VIDEO</span>
+          <div class="resource-info">
+            <div class="resource-name">Day in the Life of an AI Engineer</div>
+            <div class="resource-sub">What the job actually looks like day-to-day</div>
+          </div>
+          <span class="resource-arrow">↗</span>
+        </a>
+        <a href="https://www.youtube.com/watch?v=RzkD_rTEBYs" target="_blank" class="resource-card">
+          <span class="resource-badge badge-video">VIDEO</span>
+          <div class="resource-info">
+            <div class="resource-name">AI Careers Beyond Coding — Forbes</div>
+            <div class="resource-sub">AI ethicist, policy analyst, AI trainer — you don't need to code</div>
+          </div>
+          <span class="resource-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="full-block block" style="margin-bottom:24px">
+    <div class="block-title"><span class="icon">📹</span> Video Resources</div>
+    <div class="resource-list">
+      <a href="https://www.youtube.com/watch?v=5dZ_lvDgevk" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">The Future of AI — Sam Altman & Lex Fridman</div>
+          <div class="resource-sub">Clip (watch first 10 min) · Straight from the CEO of OpenAI on what's next</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=4RixMPF4xis" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">AlphaFold Explained — DeepMind</div>
+          <div class="resource-sub">5 min · How AI solved a 50-year biology problem and what that means for medicine</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+      <a href="https://www.youtube.com/watch?v=tNdXtiaZTw4" target="_blank" class="resource-card">
+        <span class="resource-badge badge-video">VIDEO</span>
+        <div class="resource-info">
+          <div class="resource-name">Crash Course AI — The Future of AI</div>
+          <div class="resource-sub">13 min · Final episode of the teen-friendly PBS series</div>
+        </div>
+        <span class="resource-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <div style="margin-bottom:32px">
+    <div class="block-title" style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin-bottom:20px"><span class="icon" style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;background:rgba(255,255,255,0.07);font-size:13px;margin-right:8px">🏆</span> Final Project Options — Pick One</div>
+    <div class="project-options">
+      <div class="project-card">
+        <div class="project-emoji">🤖</div>
+        <div class="project-name">Build an AI Classifier</div>
+        <div class="project-desc">Use Teachable Machine to build a classifier for something meaningful to you — teach it to sort items that matter in your community</div>
+      </div>
+      <div class="project-card">
+        <div class="project-emoji">📰</div>
+        <div class="project-name">Explain AI to a 10-Year-Old</div>
+        <div class="project-desc">Create a short video, comic strip, or illustrated guide that explains one AI concept to someone 3 years younger than you</div>
+      </div>
+      <div class="project-card">
+        <div class="project-emoji">⚖️</div>
+        <div class="project-name">AI Ethics Case Study</div>
+        <div class="project-desc">Research a real-world AI controversy, summarise what happened, and write your recommendation for how it should have been handled</div>
+      </div>
+      <div class="project-card">
+        <div class="project-emoji">💡</div>
+        <div class="project-name">AI Tool Review</div>
+        <div class="project-desc">Test 3 different AI tools on the same task. Compare the results honestly — what was great, what was wrong, what was surprising?</div>
+      </div>
+      <div class="project-card">
+        <div class="project-emoji">🌍</div>
+        <div class="project-name">AI for Good Proposal</div>
+        <div class="project-desc">Identify a real problem in your school or community. Design an AI solution — what data would it need? Who could it hurt? Is it worth building?</div>
+      </div>
+      <div class="project-card">
+        <div class="project-emoji">🎨</div>
+        <div class="project-name">AI-Assisted Creative Project</div>
+        <div class="project-desc">Create a short story, artwork, or music piece using AI tools as a collaborator — then reflect on the creative process</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="activity-block">
+    <div class="activity-label">🏆 FINAL SHOWCASE</div>
+    <div class="activity-title">Present Your Project</div>
+    <div class="activity-desc">Your final project should show that you can think about AI — not just use it. Every project, no matter which option you picked, should answer these three questions:</div>
+    <div class="steps">
+      <div class="step"><span class="step-num">1</span><div><strong>What did you make or find out?</strong> Describe your project clearly</div></div>
+      <div class="step"><span class="step-num">2</span><div><strong>What AI concepts does it connect to?</strong> Use at least 3 terms from the course</div></div>
+      <div class="step"><span class="step-num">3</span><div><strong>What surprised you?</strong> One thing you didn't expect when you started</div></div>
+      <div class="step"><span class="step-num">4</span><div><strong>What would you do differently?</strong> One thing you'd change if you had more time</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SUMMARY ═══════════════ -->
+<div id="summary" class="section" style="max-width:860px">
+  <div style="padding:48px 0 36px;border-bottom:1px solid var(--border);margin-bottom:40px">
+    <div style="font-size:12px;font-weight:600;letter-spacing:1.5px;color:var(--accent1);margin-bottom:10px">YOUR TAKEAWAYS</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-1.5px;margin-bottom:12px">6 Weeks. Here's What You Now Know.</div>
+    <p style="font-size:16px;color:var(--muted);max-width:560px;line-height:1.7">A one-page summary of everything you covered — save it, screenshot it, print it out. This is your cheat sheet for talking about AI confidently.</p>
+  </div>
+
+  <!-- Week recap cards -->
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:48px">
+
+    <div style="display:flex;gap:16px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--w1);border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--w1);letter-spacing:1px;min-width:64px;padding-top:2px">WEEK 1</div>
+      <div>
+        <div style="font-weight:600;font-size:15px;margin-bottom:4px">What Even Is AI?</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">AI is software that learns from examples instead of following fixed rules. It's already in your phone, your music app, your search engine, and your social feed — usually working quietly in the background without you noticing.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:16px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--w2);border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--w2);letter-spacing:1px;min-width:64px;padding-top:2px">WEEK 2</div>
+      <div>
+        <div style="font-weight:600;font-size:15px;margin-bottom:4px">How AI Learns</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">AI learns by being shown thousands of labelled examples — a process called training. The more examples it sees, the better it gets at spotting patterns. You trained your own image classifier using Google Teachable Machine and saw this happen live.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:16px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--w3);border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--w3);letter-spacing:1px;min-width:64px;padding-top:2px">WEEK 3</div>
+      <div>
+        <div style="font-weight:600;font-size:15px;margin-bottom:4px">Inside the Neural Network</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">Neural networks are layers of connected nodes that process information, inspired loosely by the human brain. Data flows in, gets transformed layer by layer, and an answer comes out the other side. AI tools like ChatGPT are built on enormous versions of this same idea.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:16px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--w4);border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--w4);letter-spacing:1px;min-width:64px;padding-top:2px">WEEK 4</div>
+      <div>
+        <div style="font-weight:600;font-size:15px;margin-bottom:4px">AI Ethics &amp; Society</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">When AI is trained on biased data, it produces biased results — and real people get hurt by that. Deepfakes, surveillance, and automation all raise hard questions about fairness and responsibility. Knowing about these issues makes you a more informed citizen, not just a better tech user.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:16px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--w5);border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--w5);letter-spacing:1px;min-width:64px;padding-top:2px">WEEK 5</div>
+      <div>
+        <div style="font-weight:600;font-size:15px;margin-bottom:4px">Using AI Tools &amp; Staying Safe</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">The quality of what you get from AI depends heavily on how you ask — a specific, detailed prompt almost always beats a vague one. AI also makes things up confidently, so always verify. And never share personal information with any AI tool — treat every conversation like a public space.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:16px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--w6);border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--w6);letter-spacing:1px;min-width:64px;padding-top:2px">WEEK 6</div>
+      <div>
+        <div style="font-weight:600;font-size:15px;margin-bottom:4px">The Future of AI</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">AI is moving fast — into medicine, science, creative work, and every industry you can think of. Careers in AI aren't just for coders — there are roles in ethics, policy, communication, design, and research. The people who understand AI will help shape where it goes next. That can be you.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Key terms -->
+  <div class="block" style="margin-bottom:32px">
+    <div class="block-title"><span class="icon">📖</span> Key Terms to Remember</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="concept-item"><span class="concept-bullet" style="background:var(--w1)"></span><div><strong>Artificial Intelligence (AI)</strong> — software that learns from data to perform tasks</div></div>
+      <div class="concept-item"><span class="concept-bullet" style="background:var(--w2)"></span><div><strong>Training data</strong> — the labelled examples used to teach an AI model</div></div>
+      <div class="concept-item"><span class="concept-bullet" style="background:var(--w2)"></span><div><strong>Machine learning</strong> — the method of teaching AI through examples rather than rules</div></div>
+      <div class="concept-item"><span class="concept-bullet" style="background:var(--w3)"></span><div><strong>Neural network</strong> — layers of connected nodes that process and transform data</div></div>
+      <div class="concept-item"><span class="concept-bullet" style="background:var(--w3)"></span><div><strong>Large Language Model (LLM)</strong> — AI trained on huge amounts of text to predict and generate language</div></div>
+      <div class="concept-item"><span class="concept-bullet" style="background:var(--w4)"></span><div><strong>AI bias</strong> — when unfair patterns in training data cause an AI to produce unfair results</div></div>
+      <div class="concept-item"><span class="concept-bullet" style="background:var(--w4)"></span><div><strong>Deepfake</strong> — AI-generated synthetic media that makes someone appear to say or do something they didn't</div></div>
+      <div class="concept-item"><span class="concept-bullet" style="background:var(--w5)"></span><div><strong>Prompt</strong> — the instruction or question you give an AI tool</div></div>
+      <div class="concept-item"><span class="concept-bullet" style="background:var(--w5)"></span><div><strong>Hallucination</strong> — when AI confidently states something that is factually wrong</div></div>
+      <div class="concept-item"><span class="concept-bullet" style="background:var(--w6)"></span><div><strong>Generative AI</strong> — AI that can create new text, images, audio, or video</div></div>
+    </div>
+  </div>
+
+  <!-- All resources -->
+  <div class="block" style="margin-bottom:32px">
+    <div class="block-title"><span class="icon">🔗</span> All Resources in One Place</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--muted);padding:8px 0 4px">TOOLS TO EXPLORE</div>
+      <a href="https://teachablemachine.withgoogle.com" target="_blank" class="resource-card"><span class="resource-badge badge-tool">TOOL</span><div class="resource-info"><div class="resource-name">Google Teachable Machine</div><div class="resource-sub">Train your own AI model — no code needed</div></div><span class="resource-arrow">↗</span></a>
+      <a href="https://playground.tensorflow.org" target="_blank" class="resource-card"><span class="resource-badge badge-tool">TOOL</span><div class="resource-info"><div class="resource-name">TensorFlow Playground</div><div class="resource-sub">Play with a live neural network in your browser</div></div><span class="resource-arrow">↗</span></a>
+      <a href="https://quickdraw.withgoogle.com" target="_blank" class="resource-card"><span class="resource-badge badge-game">PLAY</span><div class="resource-info"><div class="resource-name">Quick, Draw! — Google</div><div class="resource-sub">Draw something, watch AI try to guess it</div></div><span class="resource-arrow">↗</span></a>
+      <a href="https://experiments.withgoogle.com/collection/ai" target="_blank" class="resource-card"><span class="resource-badge badge-game">PLAY</span><div class="resource-info"><div class="resource-name">Google AI Experiments</div><div class="resource-sub">Playful browser demos powered by real AI</div></div><span class="resource-arrow">↗</span></a>
+      <a href="https://ml-for-kids.co.uk" target="_blank" class="resource-card"><span class="resource-badge badge-tool">TOOL</span><div class="resource-info"><div class="resource-name">Machine Learning for Kids</div><div class="resource-sub">Build AI projects in Scratch — great for going further</div></div><span class="resource-arrow">↗</span></a>
+      <a href="https://claude.ai" target="_blank" class="resource-card"><span class="resource-badge badge-tool">TOOL</span><div class="resource-info"><div class="resource-name">Claude — by Anthropic</div><div class="resource-sub">AI assistant — great for learning and asking questions</div></div><span class="resource-arrow">↗</span></a>
+
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--muted);padding:16px 0 4px">YOUTUBE CHANNELS WORTH FOLLOWING</div>
+      <a href="https://www.youtube.com/@3blue1brown" target="_blank" class="resource-card"><span class="resource-badge badge-video">VIDEO</span><div class="resource-info"><div class="resource-name">3Blue1Brown</div><div class="resource-sub">The most beautiful visual maths and AI explanations on YouTube</div></div><span class="resource-arrow">↗</span></a>
+      <a href="https://www.youtube.com/@crashcourse" target="_blank" class="resource-card"><span class="resource-badge badge-video">VIDEO</span><div class="resource-info"><div class="resource-name">Crash Course AI — PBS</div><div class="resource-sub">Full teen-friendly AI series, 17 episodes, all free</div></div><span class="resource-arrow">↗</span></a>
+      <a href="https://www.youtube.com/@kurzgesagt" target="_blank" class="resource-card"><span class="resource-badge badge-video">VIDEO</span><div class="resource-info"><div class="resource-name">Kurzgesagt — In a Nutshell</div><div class="resource-sub">Stunning animations on AI, technology, and the future</div></div><span class="resource-arrow">↗</span></a>
+      <a href="https://www.youtube.com/@Fireship" target="_blank" class="resource-card"><span class="resource-badge badge-video">VIDEO</span><div class="resource-info"><div class="resource-name">Fireship</div><div class="resource-sub">Fast, witty tech explainers — great once you have the basics</div></div><span class="resource-arrow">↗</span></a>
+    </div>
+  </div>
+
+  <!-- Books -->
+  <div class="block" style="margin-bottom:32px">
+    <div class="block-title"><span class="icon">📚</span> Books to Dig Into — All Beginner-Friendly</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+
+      <div style="display:flex;gap:16px;align-items:flex-start;padding:14px;background:var(--surface2);border-radius:12px;border:1px solid var(--border)">
+        <div style="min-width:44px;height:56px;background:rgba(124,108,252,0.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px">📘</div>
+        <div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:2px">Hello World: Being Human in the Age of Algorithms</div>
+          <div style="font-size:12px;color:var(--accent1);margin-bottom:4px">Hannah Fry · Age 14+ · Non-fiction</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.5">A warm, funny, and genuinely eye-opening look at how algorithms and AI are shaping everyday decisions — from Netflix recommendations to criminal sentencing. Written for everyone, not just tech people.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;padding:14px;background:var(--surface2);border-radius:12px;border:1px solid var(--border)">
+        <div style="min-width:44px;height:56px;background:rgba(247,113,106,0.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px">📙</div>
+        <div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:2px">How to Speak Machine: Computational Thinking for the Rest of Us</div>
+          <div style="font-size:12px;color:var(--accent2);margin-bottom:4px">John Maeda · Age 13+ · Non-fiction</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.5">A short, visual book about how computers and AI think — written by a designer, not an engineer. Perfect if you want to understand the logic behind technology without drowning in code.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;padding:14px;background:var(--surface2);border-radius:12px;border:1px solid var(--border)">
+        <div style="min-width:44px;height:56px;background:rgba(61,217,164,0.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px">📗</div>
+        <div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:2px">Weapons of Math Destruction</div>
+          <div style="font-size:12px;color:var(--accent3);margin-bottom:4px">Cathy O'Neil · Age 15+ · Non-fiction</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.5">A sharp, readable book about how algorithms can cause real harm — in hiring, education, policing, and finance. If you loved the ethics week, this goes much deeper. One of the most important AI books written for a general audience.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;padding:14px;background:var(--surface2);border-radius:12px;border:1px solid var(--border)">
+        <div style="min-width:44px;height:56px;background:rgba(249,192,62,0.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px">📒</div>
+        <div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:2px">The Alignment Problem</div>
+          <div style="font-size:12px;color:var(--accent4);margin-bottom:4px">Brian Christian · Age 15+ · Non-fiction</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.5">Explores the central challenge of AI — how do we make sure AI does what we actually want? Covers machine learning, bias, and safety in a storytelling style that makes even hard technical ideas feel approachable.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;padding:14px;background:var(--surface2);border-radius:12px;border:1px solid var(--border)">
+        <div style="min-width:44px;height:56px;background:rgba(88,180,248,0.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px">📔</div>
+        <div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:2px">Coding Projects in Scratch (DK)</div>
+          <div style="font-size:12px;color:var(--accent5);margin-bottom:4px">DK Publishing · Age 13+ · Practical / beginner coding</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.5">If this course made you want to actually build things, this is the best starter coding book. Scratch is visual, beginner-friendly, and connects directly to the Machine Learning for Kids tool you used in class.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;padding:14px;background:var(--surface2);border-radius:12px;border:1px solid var(--border)">
+        <div style="min-width:44px;height:56px;background:rgba(224,110,204,0.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px">📕</div>
+        <div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:2px">Atlas of AI</div>
+          <div style="font-size:12px;color:var(--w6);margin-bottom:4px">Kate Crawford · Age 15+ · Non-fiction</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.5">Goes beyond the technology to explore the environmental, social, and political cost of AI — where does it run, who builds it, and who pays the price? A thought-provoking read for anyone who wants to think bigger about what AI really means for the world.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Final message -->
+  <div style="background:linear-gradient(135deg,rgba(124,108,252,0.12),rgba(61,217,164,0.06));border:1px solid rgba(124,108,252,0.25);border-radius:16px;padding:28px;text-align:center;margin-bottom:20px">
+    <div style="font-size:28px;margin-bottom:12px">🎉</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:10px">You finished the course.</div>
+    <p style="font-size:14px;color:var(--muted);max-width:500px;margin:0 auto;line-height:1.7">Six weeks ago you probably couldn't explain what a neural network was. Now you can train one. You understand what AI bias means, why prompting matters, and how to stay safe using these tools. That puts you ahead of most adults. Keep going.</p>
+  </div>
+
+</div>
+
+<footer>
+  AI Foundations Curriculum · Ages 13–14 · Built for complete beginners · 6 weeks · Online
+  <br><br>
+  <span style="opacity:0.5">All linked resources are free and browser-based. No account required for most tools.</span>
+</footer>
+
+<script>
+  function show(id, tabEl) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (tabEl) tabEl.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
